@@ -1,0 +1,44 @@
+"use client";
+
+import Link from "next/link";
+import { ModeToggle } from "./ThemeToggle";
+import { Switch } from "@/components/ui/switch";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
+export const Header = () => {
+  return (
+    <header className="fixed top-0 left-6 right-6 py-4 px-8 bg-card rounded-b-3xl z-10 shadow-md">
+      <div className="container mx-auto">
+        <div className="flex justify-between items-start">
+          {/* Left: Logo */}
+          <div className="flex flex-col items-start gap-2 ">
+            <Link href="/">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-sm">
+                    S
+                  </span>
+                </div>
+                <span className="text-xl font-medium text-foreground">
+                  SubHub
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Right: Theme toggle, CreatorMode toggle, Wallet */}
+          <div className="flex items-center gap-3">
+            <ModeToggle />
+
+            {/* Replaced WalletButton with RainbowKit ConnectButton */}
+            <ConnectButton
+              showBalance={false}
+              chainStatus="icon"
+              accountStatus="address"
+            />
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};

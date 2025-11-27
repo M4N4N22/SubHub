@@ -1,0 +1,35 @@
+// ----------------------------
+// Individual Exports
+// ----------------------------
+
+export const CREATOR_PROFILE_ADDRESS =
+  "0x00f1fE30eE80767ad7eb741C068C27ED9392621f";
+
+export const SUBSCRIPTION_PLAN_ADDRESS =
+  "0x5D74e97d70afaF41586F3ccC75127AcAee9B37E1";
+
+export const PAYMENT_MANAGER_ADDRESS =
+  "0x46f7Ed98FA786def8f539370d48EB6c08BD233A5";
+
+export const MEMBERSHIP_NFT_ADDRESS =
+  "0x5Ecc533FD2fB524c5DeDf4172556f753fBE563b2";
+
+export const CONTENT_GATING_ADDRESS =
+  "0x141c41f1EbDB75206e58f44308cB5823ef682320";
+
+// Static chain contracts
+export const USDC_ADDRESS =
+  "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359";
+
+// ----------------------------
+// Optional: Grouped Export
+// ----------------------------
+
+export const CONTRACT_ADDRESSES = {
+  CREATOR_PROFILE: CREATOR_PROFILE_ADDRESS,
+  SUBSCRIPTION_PLAN: SUBSCRIPTION_PLAN_ADDRESS,
+  PAYMENT_MANAGER: PAYMENT_MANAGER_ADDRESS,
+  MEMBERSHIP_NFT: MEMBERSHIP_NFT_ADDRESS,
+  CONTENT_GATING: CONTENT_GATING_ADDRESS,
+  USDC: USDC_ADDRESS,
+} as const;
