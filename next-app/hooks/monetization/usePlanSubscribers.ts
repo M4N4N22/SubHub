@@ -26,7 +26,7 @@ export function usePlanSubscribers(planId?: number | string) {
       abi: PaymentManagerABI.abi,
       functionName: "getSubscribers",
       args: [BigInt(planId)],
-    });
+    })as string[];
 
     setSubs(users);
     setLoading(false);

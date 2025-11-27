@@ -44,12 +44,18 @@ export function useViewCreatorPlans(creatorAddress?: string) {
 
       const loaded = await Promise.all(
         planIds.map(async (id) => {
-          const plan = await client.readContract({
+          const plan = (await client.readContract({
             address: SUBSCRIPTION_PLAN_ADDRESS,
             abi: SubscriptionPlanABI.abi,
             functionName: "getPlan",
             args: [id],
-          });
+          })) as {
+            price: bigint;
+            frequency: bigint;
+            metadataCID: string;
+            active: boolean;
+          };
+          
 
           const metadata = await fetchIPFS(plan.metadataCID);
 
