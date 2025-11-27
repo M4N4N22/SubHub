@@ -39,11 +39,14 @@ const CreatorProfile = () => {
   useEffect(() => {
     if (!window.ethereum) return;
 
-    window.ethereum.request({ method: "eth_accounts" }).then((accounts: string[]) => {
-      if (accounts.length > 0 && !connected) {
-        connect();
-      }
-    });
+    window.ethereum
+      .request({ method: "eth_accounts" })
+      .then((accounts: string[]) => {
+        if (accounts.length > 0 && !connected) {
+          connect();
+        }
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // -------------------------------------------------------------------
@@ -111,7 +114,6 @@ const CreatorProfile = () => {
         <Card className="relative p-6">
           <CardContent>
             <div className="flex justify-between items-start w-full">
-
               {/* ---------------------------------------------------------
                    EMPTY STATE (Brand New Creator)
               -----------------------------------------------------------*/}

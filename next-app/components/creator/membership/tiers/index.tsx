@@ -25,7 +25,7 @@ export default function CreatorTiers() {
 
       {!loading && tiers.length === 0 && (
         <p className="text-muted-foreground">
-          You haven't created any membership tiers yet.
+          You haven&apos;t created any membership tiers yet.
         </p>
       )}
 

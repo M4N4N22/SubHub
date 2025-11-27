@@ -13,28 +13,32 @@ const client = createPublicClient({
 });
 
 export function useCreatorEarnings(address?: string) {
-  const [matic, setMatic] = useState<bigint>(0n);
-  const [usdc, setUsdc] = useState<bigint>(0n);
+  const [matic, setMatic] = useState<bigint>(BigInt(0));
+  const [usdc, setUsdc] = useState<bigint>(BigInt(0));
   const [loading, setLoading] = useState(true);
 
   async function load() {
     if (!address) return;
 
     setLoading(true);
-
     const [maticBal, usdcBal] = await Promise.all([
-      client.readContract({
-        address: PAYMENT_MANAGER_ADDRESS,
-        abi: PaymentManagerABI.abi,
-        functionName: "maticBalance",
-        args: [address],
-      }),
-      client.readContract({
-        address: PAYMENT_MANAGER_ADDRESS,
-        abi: PaymentManagerABI.abi,
-        functionName: "usdcBalance",
-        args: [address],
-      }),
+      client
+        .readContract({
+          address: PAYMENT_MANAGER_ADDRESS,
+          abi: PaymentManagerABI.abi,
+          functionName: "maticBalance",
+          args: [address],
+        })
+        .then((v) => v as bigint),
+
+      client
+        .readContract({
+          address: PAYMENT_MANAGER_ADDRESS,
+          abi: PaymentManagerABI.abi,
+          functionName: "usdcBalance",
+          args: [address],
+        })
+        .then((v) => v as bigint),
     ]);
 
     setMatic(maticBal);

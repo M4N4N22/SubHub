@@ -8,6 +8,7 @@ import { polygonAmoy } from "viem/chains";
 import MembershipNFT from "@/abi/MembershipNFT.json";
 import { MEMBERSHIP_NFT_ADDRESS } from "@/constants/contracts";
 
+
 // viem client for read-only calls
 const client = createPublicClient({
   chain: polygonAmoy,
@@ -41,7 +42,15 @@ export function useCreatorTiers() {
       abi: MembershipNFT.abi,
       functionName: "getTier",
       args: [BigInt(tierId)],
-    });
+    }) as {
+      price: bigint;
+      maxSupply: bigint;
+      royaltyBps: number;
+      metadataCID: string;
+      creator: string;
+      active: boolean;
+      minted: bigint;
+    };
 
     const metadata = await fetchIPFSMetadata(t.metadataCID);
 
@@ -64,12 +73,13 @@ export function useCreatorTiers() {
     setLoading(true);
 
     try {
-      const tierIds: bigint[] = await client.readContract({
+      const tierIds = await client.readContract({
         address: MEMBERSHIP_NFT_ADDRESS,
         abi: MembershipNFT.abi,
         functionName: "getCreatorTiers",
         args: [address],
-      });
+      }) as bigint[];
+      
 
       if (!tierIds.length) {
         setTiers([]);

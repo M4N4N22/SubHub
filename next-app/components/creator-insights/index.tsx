@@ -39,6 +39,7 @@ export default function CreatorInsights({ address }: CreatorInsightsProps) {
 
   useEffect(() => {
     if (address) reload(address);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   if (loading || !insights) {
@@ -117,7 +118,13 @@ export default function CreatorInsights({ address }: CreatorInsightsProps) {
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={earningsGraph}>
                 <defs>
-                  <linearGradient id="earningsColor" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="earningsColor"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="0%" stopColor="#015FFD" stopOpacity={0.4} />
                     <stop offset="80%" stopColor="#015FFD" stopOpacity={0.05} />
                   </linearGradient>

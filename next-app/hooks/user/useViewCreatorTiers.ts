@@ -17,9 +17,7 @@ async function fetchIPFS(cid: string) {
 
   const clean = cid.replace("ipfs://", "");
   try {
-    const res = await fetch(
-      `https://gateway.pinata.cloud/ipfs/${clean}`
-    );
+    const res = await fetch(`https://gateway.pinata.cloud/ipfs/${clean}`);
     if (!res.ok) return null;
     return await res.json();
   } catch {
@@ -45,12 +43,20 @@ export function useViewCreatorTiers(creatorAddress?: string) {
 
       const items = await Promise.all(
         tierIds.map(async (id) => {
-          const t = await client.readContract({
+          const t = (await client.readContract({
             address: MEMBERSHIP_NFT_ADDRESS,
             abi: MembershipNFTABI.abi,
             functionName: "getTier",
             args: [id],
-          });
+          })) as {
+            price: bigint;
+            maxSupply: bigint;
+            royaltyBps: number;
+            metadataCID: string;
+            creator: string;
+            active: boolean;
+            minted: bigint;
+          };
 
           const metadata = await fetchIPFS(t.metadataCID);
 

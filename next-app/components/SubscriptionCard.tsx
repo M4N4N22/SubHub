@@ -5,10 +5,10 @@ import { toast } from "sonner";
 
 interface SubscriptionCardProps {
   service: string;
-  amount: string;
-  frequency: string;
-  nextPayment: string;
-  status: "active" | "paused" | "cancelled";
+  amount: number;
+  frequency: number;
+  nextPayment: number;
+  status: "active" | "paused";
   icon?: React.ReactNode;
 }
 

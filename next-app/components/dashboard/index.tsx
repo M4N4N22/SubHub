@@ -115,7 +115,7 @@ const CreatorDashboard = () => {
                 No plans yet
               </h2>
               <p className="text-muted-foreground mb-6">
-                You haven't created any subscription plans yet.
+                You haven`&apos;t created any subscription plans yet.
               </p>
               <Link href="/creator/create">
                 <Button>Create Your First Plan</Button>

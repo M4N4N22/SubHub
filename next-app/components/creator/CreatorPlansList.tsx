@@ -24,7 +24,7 @@ export function CreatorPlansList() {
       <Card className="border-dashed">
         <CardContent className="py-10 text-center">
           <p className="text-muted-foreground mb-3">
-            You haven't created any plans yet.
+            You haven&apos;t created any plans yet.
           </p>
           <Link href="/creator/plans/create">
             <a>Create Your First Plan</a>

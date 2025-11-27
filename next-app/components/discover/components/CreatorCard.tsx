@@ -60,6 +60,7 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
 
   useEffect(() => {
     loadCreator();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, refresh]);
 
   async function loadCreator() {
@@ -103,7 +104,9 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
           args: [contentId],
         })) as any;
 
-        const mRes = await fetch(`/api/fetch-ipfs-metadata?cid=${content.contentCID}`);
+        const mRes = await fetch(
+          `/api/fetch-ipfs-metadata?cid=${content.contentCID}`
+        );
         const m = await mRes.json();
 
         posts.push({
@@ -170,7 +173,6 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
 
   return (
     <CardContent className="p-4 flex flex-col gap-4">
-
       <CreatorProfileMini
         name={data.name}
         avatar={data.avatar}
@@ -198,7 +200,11 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
       </button>
 
       {/* Modal */}
-      <CreatorJoinModal address={address} open={open} onClose={() => setOpen(false)} />
+      <CreatorJoinModal
+        address={address}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
     </CardContent>
   );
 }

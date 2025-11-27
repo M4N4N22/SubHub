@@ -61,12 +61,18 @@ export function useCreatorContent() {
       // 2. Load each post
       const results = await Promise.all(
         contentIds.map(async (id) => {
-          const data = await client.readContract({
+          const data = (await client.readContract({
             address: CONTENT_GATING_ADDRESS,
             abi: ContentGatingABI.abi,
             functionName: "getContent",
             args: [id],
-          });
+          })) as {
+            contentCID: string;
+            gate: number;
+            planId: bigint;
+            tierId: bigint;
+            timestamp: bigint;
+          };
 
           const metadata = await fetchMetadata(data.contentCID);
 
