@@ -84,7 +84,14 @@ export default function DiscoverIndex() {
   return (
     <div className="">
       <div className="flex justify-between mb-6">
-        <h1 className="text-3xl font-bold">Discover Creators</h1>
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-semibold tracking-tight">Find Creators that you love</h1>
+
+          <p className="text-muted-foreground mt-1">
+            Subscribe or become a member to get access to exclusive perks and
+            content.
+          </p>
+        </div>
 
         <Button
           variant="outline"
@@ -95,7 +102,7 @@ export default function DiscoverIndex() {
         </Button>
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
         {creators.map((address) => (
           <Card key={address} className="p-4">
             <CreatorCard address={address} />

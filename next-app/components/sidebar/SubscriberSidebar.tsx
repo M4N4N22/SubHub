@@ -20,7 +20,7 @@ export default function SubscriberSidebar() {
   const { collapsed, toggleSidebar } = useSidebar();
 
   const links = [
-    { name: "Explore", href: "/discover", icon: Compass },
+    { name: "Browse", href: "/discover", icon: Compass },
     { name: "Subscriptions", href: "/subscriptions", icon: CreditCard },
     { name: "My Feed", href: "/feed", icon: Rss },
     {
@@ -48,7 +48,7 @@ export default function SubscriberSidebar() {
       </button>
 
       {/* Sidebar Sections */}
-      <nav className="space-y-4 mt-4">
+      <nav className="space-y-2 mt-8">
         {links.map((link) => {
           const isActive =
             pathname === link.href || pathname.startsWith(link.href + "/");

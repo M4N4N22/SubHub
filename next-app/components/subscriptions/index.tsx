@@ -26,8 +26,8 @@ const Dashboard = () => {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Your Subscriptions</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-semibold tracking-tight">Your Subscriptions</h1>
+          <p className="text-muted-foreground mt-1">
             Manage all your active subscriptions, creators & renewals.
           </p>
         </div>

@@ -34,8 +34,8 @@ export default function CreatorProfileMini({
     handle?.startsWith("@") ? handle.slice(1) : handle;
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="w-[150px] h-[150px] rounded-full overflow-hidden bg-muted flex items-center justify-center">
+    <div className="flex items-center gap-8">
+      <div className="relative w-32 h-32 rounded-full overflow-hidden bg-muted">
         <Image
           src={
             avatar
@@ -43,22 +43,21 @@ export default function CreatorProfileMini({
               : "/default.webp"
           }
           alt={name}
-          width={150}
-          height={150}
-          className="object-cover w-full h-full"
+          fill
+          className="object-cover"
         />
       </div>
 
       {/* Info */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-start">
         <h3 className="font-semibold text-lg">{name}</h3>
-        <p className="text-sm text-muted-foreground mt-1 line-clamp-2 text-center">
+        <p className="text-sm text-muted-foreground line-clamp-2 text-center">
           {bio}
         </p>
 
         {/* Socials Row */}
         {socials && (
-          <div className="flex items-center gap-4 mt-2">
+          <div className="flex items-center gap-4 mt-4">
             {socials.x && (
               <Link
                 href={`https://x.com/${formatHandle(socials.x)}`}

@@ -181,7 +181,12 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
         activeSubs={data.activeSubs}
         socials={data.socials}
       />
-
+      <button
+        onClick={() => setOpen(true)}
+        className="w-full py-2 px-6 rounded-3xl bg-primary font-medium text-primary-foreground hover:bg-primary/90 transition"
+      >
+        Subscribe or Become a Member
+      </button>
       {/* Latest Posts */}
       <div className="bg-muted p-4 rounded-3xl border">
         <span className="text-xs text-foreground/70">
@@ -192,15 +197,10 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
       </div>
 
       {/* JOIN Button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="w-full py-2 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition"
-      >
-        Join
-      </button>
 
       {/* Modal */}
       <CreatorJoinModal
+      name={data.name}
         address={address}
         open={open}
         onClose={() => setOpen(false)}
