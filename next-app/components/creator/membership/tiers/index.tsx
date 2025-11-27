@@ -9,6 +9,10 @@ import { useCreatorTiers } from "@/hooks/membership/useCreatorTiers";
 
 export default function CreatorTiers() {
   const { tiers, loading } = useCreatorTiers();
+  const uniqueTiers = tiers.filter(
+    (t, index, self) =>
+      index === self.findIndex((x) => x.metadata?.title === t.metadata?.title)
+  );
 
   return (
     <div className="min-h-screen container mx-auto max-w-6xl ">
@@ -30,8 +34,8 @@ export default function CreatorTiers() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {tiers.map((t) => (
-          <Card key={t.tierId} className="overflow-hidden border border-muted">
+        {uniqueTiers.map((t) => (
+          <Card key={t.metadata?.title} className="overflow-hidden border border-muted">
             <div className="relative w-full h-48 bg-muted">
               {t.metadata?.image ? (
                 <Image

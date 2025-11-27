@@ -55,7 +55,6 @@ export function useViewCreatorPlans(creatorAddress?: string) {
             metadataCID: string;
             active: boolean;
           };
-          
 
           const metadata = await fetchIPFS(plan.metadataCID);
 

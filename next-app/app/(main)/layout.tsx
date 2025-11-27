@@ -45,7 +45,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         )}
       >
         <Header />
-        <main className="flex-1 overflow-y-auto px-20 py-28">
+        <main className="flex-1 overflow-y-auto px-20 py-28 ">
           {children}
         </main>
       </div>
