@@ -1,36 +1,37 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./PaymentManager.sol";
+import "./AccessController.sol";
 import "./MembershipNFT.sol";
 
 /**
  * @title ContentGating
- * @dev Gated content layer supporting subscription plans + NFT memberships.
+ * @dev Gated content layer consuming access decisions from AccessController
+ * Supports subscriptions, NFT ownership, and tier-based access
  */
 contract ContentGating {
-    PaymentManager public paymentManager;
+    AccessController public accessController;
     MembershipNFT public membershipNFT;
 
-    constructor(address paymentManagerAddr, address membershipNFTAddr) {
-        paymentManager = PaymentManager(paymentManagerAddr);
+    constructor(address accessControllerAddr, address membershipNFTAddr) {
+        accessController = AccessController(accessControllerAddr);
         membershipNFT = MembershipNFT(membershipNFTAddr);
     }
 
     enum GateType {
-        PUBLIC,             // 0 - open to everyone
-        SUBSCRIPTION,        // 1 - requires active subscription
-        NFT_ANY,             // 2 - requires any membership NFT
-        NFT_TIER,            // 3 - requires specific tier
-        SUB_OR_NFT           // 4 - either subscription or NFT
+        PUBLIC,        // 0 - open to everyone
+        SUBSCRIPTION,  // 1 - requires active subscription
+        NFT_ANY,       // 2 - requires any membership NFT
+        NFT_TIER,      // 3 - requires specific tier
+        SUB_OR_NFT     // 4 - subscription OR NFT
     }
 
     struct Content {
         address creator;
-        uint256 planId;       // subscription plan
-        uint256 tierId;       // required NFT tier (if any)
-        GateType gate;        // gating mode
-        string contentCID;    // IPFS/Arweave
+        uint256 planId;
+        uint256 tierId;
+        GateType gate;
+        string contentCID;
         uint256 timestamp;
     }
 
@@ -47,7 +48,9 @@ contract ContentGating {
         uint256 tierId
     );
 
-    // ---------------- WRITE ----------------
+    // --------------------------------------------------
+    // WRITE
+    // --------------------------------------------------
 
     function postContent(
         GateType gate,
@@ -57,10 +60,10 @@ contract ContentGating {
     ) external {
         require(bytes(cid).length > 0, "CID required");
 
-        // Validate gating logic
         if (gate == GateType.SUBSCRIPTION) {
             require(planId > 0, "Plan ID required");
         }
+
         if (gate == GateType.NFT_TIER) {
             require(tierId > 0, "Tier ID required");
         }
@@ -81,9 +84,14 @@ contract ContentGating {
         emit ContentPosted(id, msg.sender, gate, planId, tierId);
     }
 
-    // ---------------- ACCESS LOGIC ----------------
+    // --------------------------------------------------
+    // ACCESS LOGIC
+    // --------------------------------------------------
 
-    function canAccess(address user, uint256 contentId) public view returns (bool) {
+    function canAccess(
+        address user,
+        uint256 contentId
+    ) public view returns (bool) {
         Content memory c = contents[contentId];
 
         if (c.gate == GateType.PUBLIC) {
@@ -92,14 +100,13 @@ contract ContentGating {
 
         bool subscribed = false;
         if (c.planId > 0) {
-            subscribed = paymentManager.isSubscribed(user, c.planId);
+            subscribed = accessController.canAccess(user, c.planId);
         }
 
         bool ownsNFT = membershipNFT.balanceOf(user) > 0;
 
         bool ownsTier = false;
         if (c.tierId > 0) {
-            // Check if user owns NFT from required tier
             uint256 balance = membershipNFT.balanceOf(user);
             for (uint256 i = 0; i < balance; i++) {
                 uint256 tokenId = membershipNFT.tokenOfOwnerByIndex(user, i);
@@ -118,13 +125,23 @@ contract ContentGating {
         return false;
     }
 
-    // ---------------- READ ----------------
+    // --------------------------------------------------
+    // READ
+    // --------------------------------------------------
 
-    function getContent(uint256 id) external view returns (Content memory) {
+    function getContent(uint256 id)
+        external
+        view
+        returns (Content memory)
+    {
         return contents[id];
     }
 
-    function getCreatorPosts(address creator) external view returns (uint256[] memory) {
+    function getCreatorPosts(address creator)
+        external
+        view
+        returns (uint256[] memory)
+    {
         return creatorPosts[creator];
     }
 }

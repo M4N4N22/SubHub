@@ -5,7 +5,7 @@ import { createPublicClient, http } from "viem";
 import { polygonAmoy } from "viem/chains";
 
 import { CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 
 import CreatorProfileMini from "./CreatorProfileMini";
 import CreatorPostsPreview from "./CreatorPostsPreview";
@@ -38,7 +38,7 @@ interface CreatorProfileData {
     telegram?: string;
     instagram?: string;
   };
-  activeSubs: number;
+  activeAccess: number;
   posts: {
     title: string;
     media: string;
@@ -55,19 +55,18 @@ const client = createPublicClient({
 export default function CreatorCard({ address, refresh }: CreatorCardProps) {
   const [data, setData] = useState<CreatorProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const [open, setOpen] = useState(false); // FIXED: missing state
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    loadCreator();
+    loadProvider();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, refresh]);
 
-  async function loadCreator() {
+  async function loadProvider() {
     setLoading(true);
 
     try {
-      // 1) Creator profile CID
+      // 1) Provider profile CID
       const cid = (await client.readContract({
         address: CREATOR_PROFILE_ADDRESS,
         abi: CreatorProfileABI.abi,
@@ -84,7 +83,7 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
       const metaRes = await fetch(`/api/fetch-ipfs-metadata?cid=${cid}`);
       const meta = await metaRes.json();
 
-      // 3) Fetch latest content posts
+      // 3) Fetch latest gated resources
       const contentIds = (await client.readContract({
         address: CONTENT_GATING_ADDRESS,
         abi: ContentGatingABI.abi,
@@ -112,21 +111,21 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
         posts.push({
           title: m.title,
           media: m.media,
-          type: m.type ?? "content",
+          type: m.type ?? "resource",
         });
       }
 
-      // 4) Count active subscribers
-      let activeSubs = 0;
+      // 4) Count active payment rights (previously subscribers)
+      let activeAccess = 0;
 
-      const creatorPlans = (await client.readContract({
+      const providerPlans = (await client.readContract({
         address: SUBSCRIPTION_PLAN_ADDRESS,
         abi: SubscriptionPlanABI.abi,
         functionName: "getCreatorPlans",
         args: [address],
       })) as bigint[];
 
-      for (const planId of creatorPlans) {
+      for (const planId of providerPlans) {
         const subs = (await client.readContract({
           address: PAYMENT_MANAGER_ADDRESS,
           abi: PaymentManagerABI.abi,
@@ -134,42 +133,43 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
           args: [planId],
         })) as string[];
 
-        activeSubs += subs.length;
+        activeAccess += subs.length;
       }
 
-      // 5) Set the final UI data
       setData({
-        name: meta.name || "Unnamed Creator",
+        name: meta.name || "Unnamed Provider",
         avatar: meta.avatar ? meta.avatar.replace("ipfs://", "") : "",
         bio: meta.bio || "",
         socials: meta.socials || {},
-        activeSubs,
+        activeAccess,
         posts,
         createdAt: meta.createdAt,
       });
     } catch (err) {
-      console.error("Error loading creator:", err);
+      console.error("Error loading access provider:", err);
       setData(null);
     } finally {
       setLoading(false);
     }
   }
 
-  // -------------------- UI RENDER --------------------
+  // -------------------- UI --------------------
 
-  if (loading)
+  if (loading) {
     return (
       <CardContent className="p-8 flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </CardContent>
     );
+  }
 
-  if (!data)
+  if (!data) {
     return (
       <CardContent className="p-6 text-center text-muted-foreground">
-        Failed to load creator data.
+        Failed to load access provider.
       </CardContent>
     );
+  }
 
   return (
     <CardContent className="p-4 flex flex-col gap-4">
@@ -178,29 +178,37 @@ export default function CreatorCard({ address, refresh }: CreatorCardProps) {
         avatar={data.avatar}
         bio={data.bio}
         address={address}
-        activeSubs={data.activeSubs}
+        activeAccess={data.activeAccess} // UI label should be updated in this component
         socials={data.socials}
       />
+
+      {/* Payment-first CTA */}
       <button
         onClick={() => setOpen(true)}
         className="w-full py-2 px-6 rounded-3xl bg-primary font-medium text-primary-foreground hover:bg-primary/90 transition"
       >
-        Subscribe or Become a Member
+        Acquire Access
       </button>
-      {/* Latest Posts */}
+
+      {/* zk / payment hint */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="w-4 h-4 text-primary" />
+        Access verified via on-chain payment (zkEVM-ready)
+      </div>
+
+      {/* Gated resources preview */}
       <div className="bg-muted p-4 rounded-3xl border">
         <span className="text-xs text-foreground/70">
-          Latest posts from <span className="font-medium">{data.name}</span>
+          Preview of gated resources from{" "}
+          <span className="font-medium">{data.name}</span>
         </span>
 
         <CreatorPostsPreview posts={data.posts} />
       </div>
 
-      {/* JOIN Button */}
-
       {/* Modal */}
       <CreatorJoinModal
-      name={data.name}
+        name={data.name}
         address={address}
         open={open}
         onClose={() => setOpen(false)}

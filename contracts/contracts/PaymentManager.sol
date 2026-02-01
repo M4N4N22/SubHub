@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title PaymentManager
- * @dev Handles subscription payments in both MATIC and USDC.
- * Includes full subscriber + user analytics.
+ * @dev Handles subscription payments in MATIC and USDC
+ * Acts as a payment rail that produces access rights
  */
 contract PaymentManager is ReentrancyGuard {
     SubscriptionPlan public planContract;
@@ -31,14 +31,14 @@ contract PaymentManager is ReentrancyGuard {
     mapping(address => uint256) public usdcBalance;
 
     // ----------------------------------------
-    // Subscriber Tracking (per plan)
+    // Subscriber Tracking
     // ----------------------------------------
     mapping(uint256 => address[]) private planSubscribers;
     mapping(uint256 => mapping(address => bool)) private hasSubscribedBefore;
     mapping(uint256 => mapping(address => uint256)) private joinTimestamp;
 
     // ----------------------------------------
-    // NEW — User Dashboard Tracking
+    // User Dashboard Tracking
     // ----------------------------------------
     mapping(address => uint256[]) private userSubscribedPlans;
     mapping(address => mapping(uint256 => bool)) private userPlanAdded;
@@ -53,11 +53,12 @@ contract PaymentManager is ReentrancyGuard {
         bool isUSDC
     );
 
-    event Renewed(
+    /// @dev Core payment → access signal
+    event AccessGranted(
         address indexed user,
         uint256 indexed planId,
         uint256 expiry,
-        bool isUSDC
+        address paymentToken
     );
 
     event EarningsWithdrawnMATIC(address indexed creator, uint256 amount);
@@ -72,17 +73,15 @@ contract PaymentManager is ReentrancyGuard {
     }
 
     // ----------------------------------------
-    // INTERNAL: Track subscriber (per plan + per user)
+    // INTERNAL: Track subscriber
     // ----------------------------------------
     function _trackSubscriber(uint256 planId, address user) internal {
-        // Track per-plan subscriber list
         if (!hasSubscribedBefore[planId][user]) {
             hasSubscribedBefore[planId][user] = true;
             planSubscribers[planId].push(user);
             joinTimestamp[planId][user] = block.timestamp;
         }
 
-        // Track user → subscribed plans (only once)
         if (!userPlanAdded[user][planId]) {
             userPlanAdded[user][planId] = true;
             userSubscribedPlans[user].push(planId);
@@ -108,21 +107,19 @@ contract PaymentManager is ReentrancyGuard {
         sub.lastPaid = block.timestamp;
         sub.usingUSDC = false;
 
-        // Track subscriber + user dashboard
         _trackSubscriber(planId, msg.sender);
 
-        // Earnings
         maticBalance[plan.creator] += msg.value;
 
         emit Subscribed(msg.sender, planId, newExpiry, false);
+        emit AccessGranted(msg.sender, planId, newExpiry, address(0));
     }
 
     // ----------------------------------------
-    // Subscription: USDC
+    // Subscription: USDC (PRIMARY STABLECOIN RAIL)
     // ----------------------------------------
     function subscribeUSDC(uint256 planId) external nonReentrant {
         SubscriptionPlan.Plan memory plan = planContract.getPlan(planId);
-
         require(plan.active, "Plan inactive");
 
         require(
@@ -140,12 +137,12 @@ contract PaymentManager is ReentrancyGuard {
         sub.lastPaid = block.timestamp;
         sub.usingUSDC = true;
 
-        // Track subscriber + user dashboard
         _trackSubscriber(planId, msg.sender);
 
         usdcBalance[plan.creator] += plan.price;
 
         emit Subscribed(msg.sender, planId, newExpiry, true);
+        emit AccessGranted(msg.sender, planId, newExpiry, address(usdc));
     }
 
     // ----------------------------------------
@@ -153,7 +150,7 @@ contract PaymentManager is ReentrancyGuard {
     // ----------------------------------------
     function withdrawMATIC() external nonReentrant {
         uint256 amount = maticBalance[msg.sender];
-        require(amount > 0, "No MATIC to withdraw");
+        require(amount > 0, "No MATIC");
 
         maticBalance[msg.sender] = 0;
         payable(msg.sender).transfer(amount);
@@ -163,7 +160,7 @@ contract PaymentManager is ReentrancyGuard {
 
     function withdrawUSDC() external nonReentrant {
         uint256 amount = usdcBalance[msg.sender];
-        require(amount > 0, "No USDC to withdraw");
+        require(amount > 0, "No USDC");
 
         usdcBalance[msg.sender] = 0;
         require(usdc.transfer(msg.sender, amount), "USDC transfer failed");
@@ -172,19 +169,47 @@ contract PaymentManager is ReentrancyGuard {
     }
 
     // ----------------------------------------
-    // Views
+    // Access Primitives (INFRA)
     // ----------------------------------------
-    function isSubscribed(
+
+    /// @notice Canonical access check for apps, APIs, agents
+    function hasActiveAccess(
         address user,
         uint256 planId
-    ) external view returns (bool) {
+    ) public view returns (bool) {
         return subscriptions[user][planId].expiry >= block.timestamp;
     }
 
-    function subscriptionExpiry(
-        address user,
-        uint256 planId
-    ) external view returns (uint256) {
+    /// @notice Machine-readable payment condition
+    function getPaymentCondition(uint256 planId)
+        external
+        view
+        returns (
+            address paymentToken,
+            uint256 amount,
+            uint256 frequency
+        )
+    {
+        SubscriptionPlan.Plan memory plan = planContract.getPlan(planId);
+        return (address(usdc), plan.price, plan.frequency);
+    }
+
+    // ----------------------------------------
+    // Existing Views (unchanged)
+    // ----------------------------------------
+    function isSubscribed(address user, uint256 planId)
+        external
+        view
+        returns (bool)
+    {
+        return hasActiveAccess(user, planId);
+    }
+
+    function subscriptionExpiry(address user, uint256 planId)
+        external
+        view
+        returns (uint256)
+    {
         return subscriptions[user][planId].expiry;
     }
 
@@ -204,9 +229,6 @@ contract PaymentManager is ReentrancyGuard {
         return joinTimestamp[planId][user];
     }
 
-    // ----------------------------------------
-    // NEW — Required for User Dashboard
-    // ----------------------------------------
     function getUserSubscribedPlans(address user)
         external
         view
