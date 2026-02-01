@@ -13,7 +13,7 @@ interface Props {
   avatar: string;
   bio: string;
   address: string;
-  activeSubs: number;
+  activeAccess: number;
   socials?: {
     x?: string;
     discord?: string;
@@ -27,7 +27,7 @@ export default function CreatorProfileMini({
   avatar,
   bio,
   address,
-  activeSubs,
+  activeAccess,
   socials,
 }: Props) {
   const formatHandle = (handle?: string) =>
@@ -100,7 +100,7 @@ export default function CreatorProfileMini({
 
         {/* Subscribers Count */}
         <div className="flex items-center gap-1 text-xs mt-3 border border-primary text-primary px-3 py-2 rounded-3xl font-semibold">
-          {activeSubs} Active Subscribers
+          {activeAccess} Active Access
         </div>
       </div>
     </div>

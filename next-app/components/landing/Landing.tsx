@@ -4,181 +4,110 @@ import Link from "next/link";
 import {
   ArrowRight,
   Shield,
-  Brain,
-  Zap,
-  Star,
-  Database,
   Lock,
   Network,
-  Binary,
-  HardDrive,
-  ServerCog,
+  CreditCard,
 } from "lucide-react";
 
 const Landing = () => {
   const features = [
     {
-      title: "Set Once, Runs Forever",
+      title: "Programmable Payments",
       description:
-        "Configure your subscription payment once and let blockchain automation handle the rest.",
-      icon: "⚡",
+        "Define recurring or one-time USDC payments that settle instantly on Polygon with low fees and deterministic finality.",
+      icon: <CreditCard className="w-8 h-8" />,
     },
     {
-      title: "No More Missed Payments",
+      title: "Payment-Gated Access",
       description:
-        "Smart contracts ensure your subscriptions are always paid on time, every time.",
-      icon: "🎯",
+        "Unlock content, APIs, communities, or software features only when on-chain payment conditions are satisfied.",
+      icon: <Lock className="w-8 h-8" />,
     },
     {
-      title: "Complete Control",
+      title: "Privacy-Ready Verification",
       description:
-        "Pause, modify, or cancel your subscriptions instantly with just one click.",
-      icon: "🔧",
+        "Access is verified directly from on-chain payment state, without exposing subscriber lists or relying on backend auth.",
+      icon: <Shield className="w-8 h-8" />,
     },
     {
-      title: "Truly Decentralized",
+      title: "Non-Custodial by Design",
       description:
-        "Your payments run autonomously without relying on centralized infrastructure.",
-      icon: "🌐",
+        "Funds flow directly between users and creators with no platform custody, escrow, or withdrawal delays.",
+      icon: <Network className="w-8 h-8" />,
     },
   ];
 
   const stats = [
-    { label: "Active Subscriptions", value: "10,000+" },
-    { label: "Total Value Locked", value: "$2.5M" },
-    { label: "Success Rate", value: "99.9%" },
-    { label: "Services Supported", value: "50+" },
+    { label: "Payment Contracts Deployed", value: "6+" },
+    { label: "Primary Network", value: "Polygon PoS" },
+    { label: "Payment Asset", value: "USDC (Primary)" },
+    { label: "Access Logic", value: "On-Chain" },
   ];
 
   return (
-    <div className="min-h-screen">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/90 via-background  dark:from-primary/50 dark:via-primary/30 dark:to-primary/50"></div>
-
-      <div className="absolute inset-0 overflow-hidden opacity-10 z-0">
-        <Database
-          className="absolute w-8 h-8 text-white top-20 left-[10%] animate-pulse"
-          style={{ animationDelay: "0s", animationDuration: "3s" }}
-        />
-        <ServerCog
-          className="absolute w-10 h-10 text-white top-40 right-[15%] animate-pulse"
-          style={{ animationDelay: "0.5s", animationDuration: "4s" }}
-        />
-        <Lock
-          className="absolute w-6 h-6 text-white bottom-32 left-[20%] animate-pulse"
-          style={{ animationDelay: "1s", animationDuration: "3.5s" }}
-        />
-        <Database
-          className="absolute w-12 h-12 text-white top-[60%] right-[25%] animate-pulse"
-          style={{ animationDelay: "1.5s", animationDuration: "4.5s" }}
-        />
-        <HardDrive
-          className="absolute w-7 h-7 text-white bottom-[20%] right-[10%] animate-pulse"
-          style={{ animationDelay: "2s", animationDuration: "3s" }}
-        />
-        <ServerCog
-          className="absolute w-9 h-9 text-white top-[30%] left-[5%] animate-pulse"
-          style={{ animationDelay: "2.5s", animationDuration: "5s" }}
-        />
-        <Database
-          className="absolute w-6 h-6 text-white bottom-40 right-[30%] animate-pulse"
-          style={{ animationDelay: "3s", animationDuration: "3.5s" }}
-        />
-        <ServerCog
-          className="absolute w-8 h-8 text-white top-[50%] left-[30%] animate-pulse"
-          style={{ animationDelay: "3.5s", animationDuration: "4s" }}
-        />
-      </div>
-
-      <div className="absolute inset-0 backdrop-blur-3xl dark:bg-white/5 bg-black/5"></div>
-
-      <div className="absolute inset-0 overflow-hidden opacity-10">
-        <div
-          className="absolute w-2 h-2 bg-white rounded-full top-[15%] left-[12%] animate-ping"
-          style={{ animationDuration: "2s" }}
-        ></div>
-        <div
-          className="absolute w-3 h-3 bg-white rounded-full top-[25%] right-[18%] animate-ping"
-          style={{ animationDuration: "3s", animationDelay: "0.5s" }}
-        ></div>
-        <div
-          className="absolute w-2 h-2 bg-white rounded-full bottom-[30%] left-[8%] animate-ping"
-          style={{ animationDuration: "2.5s", animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute w-3 h-3 bg-white rounded-full top-[70%] right-[12%] animate-ping"
-          style={{ animationDuration: "3.5s", animationDelay: "1.5s" }}
-        ></div>
-        <div
-          className="absolute w-2 h-2 bg-white rounded-full top-[45%] left-[15%] animate-ping"
-          style={{ animationDuration: "2s", animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute w-3 h-3 bg-white rounded-full bottom-[45%] right-[20%] animate-ping"
-          style={{ animationDuration: "3s", animationDelay: "2.5s" }}
-        ></div>
-      </div>
-
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage:
-            "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
-          backgroundSize: "50px 50px",
-        }}
-      ></div>
-
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-56 pb-16">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Hero */}
+      <section className="relative pt-56 pb-24">
         <div className="container mx-auto px-4 text-center">
-          <div className="mx-auto space-y-6">
-            <h1 className="text-5xl font-semibold tracking-tighter text-foreground sm:text-6xl lg:text-8xl">
-              The Creator Economy <span className="text-primary">On-Chain</span>
+          <div className="mx-auto space-y-8 max-w-4xl">
+            <h1 className="text-5xl font-semibold tracking-tighter sm:text-6xl lg:text-7xl">
+              Programmable Payments
               <br />
-              <span className="text-foreground/50 font-normal">
-                Built on
-              </span>{" "}
-              Polygon
+              <span className="text-primary">Meet Access Control</span>
             </h1>
 
             <p className="mx-auto max-w-2xl text-xl text-muted-foreground leading-relaxed">
-              Launch NFT memberships, gated content, and subscription plans, all
-              backed by Polygon, zk-proofs, and trustless smart contracts.
+              SubHub is a Polygon-native protocol for USDC-first payments and
+              payment-gated access, with non-custodial payouts and on-chain
+              verification.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/discover">
-                <Button
-                  variant="default"
-                  size="lg"
-                  className="min-w-[300px] p-6 rounded-full text-lg"
-                >
-                  Explore Creators
+                <Button size="lg" className="min-w-[260px] rounded-full text-lg h-12">
+                  View Live Demo
                 </Button>
               </Link>
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="min-w-[260px] rounded-full text-lg h-12"
+              >
+                <a
+                  href="https://github.com/M4N4N22/SubHub"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read Protocol Docs
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </a>
+              </Button>
+
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-44 bg-background">
+      {/* What is SubHub */}
+      <section className="py-40 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              What is SubHub?
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A creator protocol powered by Polygon, where memberships, content
-              access, subscriptions, and identity all live on-chain.
+          <div className="text-center mb-20">
+            <h2 className="text-3xl font-bold mb-4">What is SubHub?</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              SubHub is an on-chain payments and access primitive. It allows
+              builders to define who can access content, software, APIs, or
+              communities purely based on verifiable on-chain payment state.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-3 w-3/4 mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {features.map((feature, index) => (
               <Card key={index} className="hover-lift">
-                <CardContent className="p-6 text-center">
-                  <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                <CardContent className="p-8">
+                  <div className="mb-4 text-primary">{feature.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">
                     {feature.title}
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
@@ -191,15 +120,13 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-card">
+      {/* Stats */}
+      <section className="py-20 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl lg:text-4xl font-bold mb-2">
-                  {stat.value}
-                </div>
+                <div className="text-3xl font-bold mb-2">{stat.value}</div>
                 <div className="text-sm text-muted-foreground uppercase tracking-wide">
                   {stat.label}
                 </div>
@@ -209,22 +136,23 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-primary/80 text-primary-foreground">
+      {/* CTA */}
+      <section className="py-28 bg-primary/80 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-6">
             <h2 className="text-3xl lg:text-4xl font-bold">
-              Empowering Creators & Fans with Polygon.
+              Payments Are the Primitive.
             </h2>
             <p className="text-lg text-primary-foreground/80">
-              Unlock NFT memberships, zk-protected content, AI-powered insights,
-              and unstoppable creator payments.
+              Build subscriptions, gated access, and programmable monetization
+              directly on Polygon using stablecoin payments — without custodians,
+              logins, or opaque rules.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
+            <div className="flex justify-center pt-6">
               <Link href="/discover">
-                <Button variant="default" size="lg" className="min-w-[180px]">
-                  Explore Creators
+                <Button size="lg" className="min-w-[220px]">
+                  Launch on SubHub
                 </Button>
               </Link>
             </div>
