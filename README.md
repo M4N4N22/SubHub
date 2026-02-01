@@ -1,41 +1,41 @@
 # SubHub
 
-SubHub is a creator economy protocol built on Polygon that enables creators to launch NFT memberships, subscription plans, and gated content using trustless smart contracts, zero-knowledge proofs, and on-chain identity. Fans can subscribe, collect memberships, unlock exclusive content, and engage with creators across the Polygon ecosystem.
+SubHub is a Polygon-native protocol for programmable payments and payment-gated access. It treats USDC stablecoin payments as the primary onchain money rail, deriving access rights directly from verified payment state—without custodians, backend auth servers, or off-chain entitlements.
 
 ## Overview
 
-SubHub provides on-chain primitives for modern creator monetization:
+SubHub provides onchain primitives for payment-derived access control:
 
-**NFT Memberships**: Resellable passes that unlock exclusive content and benefits, with creator royalties on secondary sales.
+**USDC-first Payment Rails**: Stablecoins as the default payment primitive with MATIC fallback for Polygon-native money infrastructure.
 
-**Subscription Plans**: Trustless, automated recurring access controlled by smart contracts.
+**Payments as State**: Subscriptions tracked as durable onchain state (subscriptions[user][planId].expiry >= block.timestamp), not transient events.
 
-**Gated Content**: Creators can upload content stored on IPFS via Pinata, unlocked through NFT ownership or active subscription.
+**Payment-Derived Access**: Access rights verified purely from PaymentManager state with zero backend auth, sessions, or cookies.
 
-**Polygon-native Identity**: Optional DID, social verification, reputation, and zero-knowledge enabled privacy.
+**Non-Custodial Payouts**: Direct creator withdrawals with no escrow, no custody, no delays.
 
-**Multi-chain Interoperability**: Access the platform from Polygon PoS, zkEVM, and connected L2s. Creators and fans can onboard using MATIC, USDC, or credit cards via supported payment partners.
+**General-Purpose Primitive**: Reusable across creators, SaaS, APIs, communities, and gated digital services—not just creator monetization.
+
+**Instant Finality**: Polygon PoS settlement enables immediate unlock UX with low fees and high throughput.
 
 ## Features
 
-### Creator Features
+### Creator/Service Provider Features
 
-- Create an on-chain creator profile
-- Launch NFT membership tiers
-- Publish gated content
-- Create private or public subscription plans
-- Track analytics, subscribers, royalties, and earnings
-- Withdraw earnings in MATIC or USDC
-- Connect social accounts for verification
+- Create onchain creator profiles
+- Launch subscription plans (USDC-denominated recurring payments)
+- Publish gated content with payment-derived access control
+- Issue ERC-721 membership NFTs (transferable, resellable access tokens)
+- Withdraw earnings directly in USDC or MATIC (no custody)
+- Track subscribers and earnings via onchain state reads
 
-### Fan Features
+### Subscriber/User Features
 
-- Discover creators across the ecosystem
-- Subscribe using MATIC, USDC, or credit card
-- Unlock gated posts, media, and premium content
-- Hold or resell NFT memberships
-- Build a cross-chain creator feed
-- Manage subscriptions and access across devices
+- Subscribe using USDC (primary) or MATIC (fallback)
+- Unlock gated content instantly via payment verification
+- Hold, transfer, or resell membership NFTs
+- Manage subscriptions with zero off-chain auth
+- Access across any protocol consuming SubHub's payment primitives
 
 ## Tech Stack
 
@@ -43,7 +43,7 @@ SubHub provides on-chain primitives for modern creator monetization:
 
 - Next.js (App Router)
 - TypeScript
-- Wagmi / Viem
+- Wagmi / Viem (1:1 contract call mappings)
 - RainbowKit
 - Shadcn/UI
 - Tailwind CSS
@@ -52,16 +52,17 @@ SubHub provides on-chain primitives for modern creator monetization:
 
 - Solidity
 - Polygon PoS
-- IPFS / Arweave storage
-- ERC-721 membership contracts
-- Subscription registry contracts
+- USDC as primary payment rail
+- ERC-721 membership tokens
+- Composable access control contracts
 
-### Backend Integrations
+### Architecture Principles
 
-- NFT metadata generation
-- IPFS upload pipelines
-- Webhooks for creator events
-- Payment routing infrastructure
+- Payment-derived access (no backend permissions)
+- Zero custody, zero escrow
+- USDC-first UX with explicit MATIC fallback
+- Instant finality on Polygon PoS
+- Composable contracts separating payments, access, and content
 
 ## Project Structure
 
@@ -69,11 +70,12 @@ SubHub provides on-chain primitives for modern creator monetization:
 SubHub/
 ├── next-app/               # Next.js frontend application
 ├── contracts/              # Solidity smart contracts
-│   ├── ContentGating.sol
-│   ├── CreatorProfile.sol
-│   ├── MembershipNFT.sol
-│   ├── PaymentManager.sol
-│   └── SubscriptionPlan.sol
+│   ├── PaymentManager.sol      # Core payment primitive (USDC-first)
+│   ├── SubscriptionPlan.sol    # Recurring payment parameters
+│   ├── AccessController.sol    # Payment → access bridge
+│   ├── ContentGating.sol       # Access enforcement layer
+│   ├── CreatorProfile.sol      # Creator identity
+│   └── MembershipNFT.sol       # ERC-721 access tokens
 ├── hooks/                  # Web3 and data hooks
 │   ├── content/
 │   │   └── useCreatorContent.ts
@@ -96,32 +98,29 @@ SubHub/
 │   ├── useCreatePlan.ts
 │   ├── useCreatorInsights.ts
 │   ├── useCreatorPlans.ts
-│   ├── useCreatorProfile.ts
-│   └── useEvmWallet.ts
+│   └── useCreatorProfile.ts
 ├── abis/                   # Contract ABI files
 ├── public/                 # Static assets
 └── components/             # Shared UI components
 ```
 
-## Deployed Contracts
-
-SubHub is deployed on Polygon PoS mainnet with the following contract addresses:
+## Deployed Contracts (Polygon Amoy)
 
 | Contract | Address |
 |----------|---------|
-| Creator Profile | `0x00f1fE30eE80767ad7eb741C068C27ED9392621f` |
-| Subscription Plan | `0x5D74e97d70afaF41586F3ccC75127AcAee9B37E1` |
-| Payment Manager | `0x46f7Ed98FA786def8f539370d48EB6c08BD233A5` |
-| Membership NFT | `0x5Ecc533FD2fB524c5DeDf4172556f753fBE563b2` |
-| Content Gating | `0x141c41f1EbDB75206e58f44308cB5823ef682320` |
-| USDC | `0x3c499c542cef5e3811e1192ce70d8cc03d5c3359` |
+| CreatorProfile | `0x00f1fE30eE80767ad7eb741C068C27ED9392621f` |
+| SubscriptionPlan | `0x5D74e97d70afaF41586F3ccC75127AcAee9B37E1` |
+| PaymentManager (USDC-first) | `0x7Bb3BD54B1fBbd264ae3caAf21f58c7f9803C771` |
+| MembershipNFT | `0x5Ecc533FD2fB524c5DeDf4172556f753fBE563b2` |
+| ContentGating | `0xeDf08B9b467Aad2cC4c98E667577cea9A7374420` |
+| AccessController | `0x3EE26CE9bB2148ff5D7F16FA72dCf9a484D19bca` |
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18 or higher
-- npm package manager
+- npm or pnpm package manager
 
 ### Installation
 
@@ -156,33 +155,57 @@ pnpm dev
 
 The application will run at `http://localhost:3000`
 
-## Deployment
+## Core Architecture
 
-### Frontend Deployment
+### PaymentManager (Core Primitive)
+- Handles USDC and MATIC (USDC primary)
+- Tracks active subscriptions, expiry windows, subscriber → plan mappings
+- Accumulates creator earnings without escrow
+- Exposes access state as pure onchain reads
 
-SubHub can be deployed to:
+### SubscriptionPlan
+- Defines recurring payment parameters: price (USDC), frequency, creator recipient
+- Decoupled from payment execution for extensibility
+- Enables future automation (agents, schedulers, paymasters)
 
-- Vercel
-- Netlify
-- Custom Docker infrastructure
+### AccessController
+- Minimal adapter converting payment state to boolean access rights
+- canAccess(user, planId) → bool
+- Makes SubHub usable beyond creators (SaaS, APIs, dashboards)
 
-### Smart Contract Deployment
+### ContentGating
+- Enforces access via PaymentManager (subscriptions) and MembershipNFT ownership
+- No backend permissions or centralized allowlists
+- Supports: PUBLIC, SUBSCRIPTION, NFT_ANY, NFT_TIER, SUB_OR_NFT
 
-Smart contracts should be deployed to:
+### MembershipNFT
+- ERC-721 access tokens
+- Transferable, resellable access rights
+- Tier-aware gating for differentiated privileges
 
-- Polygon PoS mainnet
-- Polygon Amoy testnet
+## Key Technical Value
+
+- **Payments as onchain access state**, not off-chain permissions
+- **USDC-native recurring payments** aligned with Polygon's money rails
+- **Zero custody, zero escrow, zero auth servers**
+- **Immediate finality** → instant UX
+- **General-purpose primitive** reusable across verticals
+
+## Why Polygon
+
+- Treats Polygon as money infrastructure, not just execution
+- Optimized for stablecoins, not speculative assets
+- Built for high-throughput, low-fee, real-world payments
+- Ready for: AI payment agents, gasless onboarding, programmable money flows
 
 ## Roadmap
 
-- AI-powered creator insights
-- Zero-knowledge protected subscriber lists
-- Multi-format gated content
-- Cross-chain indexing
-- Creator storefronts
-- Partner integrations
-- Decentralized discovery index
-- Mobile app (PWA)
+- zk-backed private access proofs (subscriber anonymity)
+- Delegated/agent-based recurring payments
+- ERC-4337 + paymaster integrations
+- Cross-app access composition
+- Non-creator verticals (SaaS, APIs, communities)
+- Programmable money flows and conditional payments
 
 ## Contributing
 
@@ -190,7 +213,7 @@ Pull requests, improvements, and contract audits are welcome. Please open an iss
 
 ## License
 
-MIT License. See `LICENSE` for details.
+MIT License.
 
 ## Support
 
