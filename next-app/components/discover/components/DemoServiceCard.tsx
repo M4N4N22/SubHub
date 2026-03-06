@@ -46,7 +46,7 @@ export default function DemoServiceCard({ service }: { service: Service }) {
                     </div>
 
                     {service.status && (
-                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500 border border-border">
                             {service.status}
                         </span>
                     )}
@@ -82,16 +82,16 @@ export default function DemoServiceCard({ service }: { service: Service }) {
 
                 {/* ===== LIVE PROTOCOL STATE ===== */}
                 {(isProcessing || txState === "confirmed") && (
-                    <div className="mt-3 border rounded-lg p-3 bg-secondary text-xs space-y-2">
+                    <div className="mt-3 border rounded-lg p-3  text-xs space-y-2">
                         {txState === "signing" && (
-                            <div className="flex items-center gap-2 text-primary">
+                            <div className="flex items-center gap-2 text-foreground">
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
                                 Approving USDC...
                             </div>
                         )}
 
                         {txState === "subscribing" && (
-                            <div className="flex items-center gap-2 text-primary">
+                            <div className="flex items-center gap-2 text-foreground">
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
                                 Writing to PaymentManager...
                             </div>
@@ -99,7 +99,7 @@ export default function DemoServiceCard({ service }: { service: Service }) {
 
                         {txState === "confirmed" && (
                             <>
-                                <div className="flex items-center gap-2 text-primary">
+                                <div className="flex items-center gap-2 text-foreground">
                                     <CheckCircle2 className="w-3.5 h-3.5" />
                                     Subscription Confirmed
                                 </div>

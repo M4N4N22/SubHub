@@ -5,17 +5,7 @@ import DemoServiceCard from "./components/DemoServiceCard";
 
 export default function AccessIndex() {
   const demoServices = [
-    {
-      id: "ai-api",
-      planId: BigInt(0),
-      name: "AI Research API",
-      icon: <Zap className="w-5 h-5 text-primary-foreground" />,
-      description:
-        "Programmable API access unlocked via USDC subscription. Deterministic onchain access verification.",
-      price: "25",
-      frequency: "month",
-      status: "Demo",
-    },
+
     {
       id: "quant-dashboard",
       planId: BigInt(1),
@@ -23,31 +13,21 @@ export default function AccessIndex() {
       icon: <LineChart className="w-5 h-5 text-primary-foreground" />,
       description:
         "Premium analytics dashboard gated by onchain subscription state.",
-      price: "40",
+      price: "20",
       frequency: "month",
-      status: "Demo",
+      status: "On chain",
     },
-    {
-      id: "dev-sdk",
-      planId: BigInt(2),
-      name: "Pro Developer SDK",
-      icon: <Code className="w-5 h-5 text-primary-foreground" />,
-      description:
-        "Access advanced SDK features and endpoints via programmable subscription.",
-      price: "15",
-      frequency: "month",
-      status: "Demo",
-    },
+
     {
       id: "data-feed",
-      planId: BigInt(3),
+      planId: BigInt(2),
       name: "Onchain Data Feed",
       icon: <Database className="w-5 h-5 text-primary-foreground" />,
       description:
         "Real-time blockchain data stream unlocked by stablecoin subscription.",
-      price: "30",
+      price: "25",
       frequency: "month",
-      status: "Demo",
+      status: "On chain",
     },
   ];
 
