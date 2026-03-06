@@ -11,6 +11,11 @@
           "internalType": "address",
           "name": "usdcAddress",
           "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "permit2Address",
+          "type": "address"
         }
       ],
       "stateMutability": "nonpayable",
@@ -281,6 +286,19 @@
     },
     {
       "inputs": [],
+      "name": "permit2",
+      "outputs": [
+        {
+          "internalType": "contract IPermit2",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "planContract",
       "outputs": [
         {
@@ -295,14 +313,19 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
           "internalType": "uint256",
           "name": "planId",
           "type": "uint256"
         }
       ],
-      "name": "subscribeMATIC",
+      "name": "subscribeFor",
       "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -314,6 +337,75 @@
         }
       ],
       "name": "subscribeUSDC",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "planId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IPermit2.TokenPermissions",
+              "name": "permitted",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPermit2.PermitTransferFrom",
+          "name": "permit",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "requestedAmount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPermit2.SignatureTransferDetails",
+          "name": "transferDetails",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "subscribeWithPermit2",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
