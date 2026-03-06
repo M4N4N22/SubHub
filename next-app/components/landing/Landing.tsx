@@ -63,9 +63,9 @@ const Landing = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/discover">
+              <Link href="/access">
                 <Button size="lg" className="min-w-[260px] rounded-full text-lg h-12">
-                  View Live Demo
+                  Explore Services
                 </Button>
               </Link>
 
@@ -150,9 +150,9 @@ const Landing = () => {
             </p>
 
             <div className="flex justify-center pt-6">
-              <Link href="/discover">
+              <Link href="/access">
                 <Button size="lg" className="min-w-[220px]">
-                  Launch on SubHub
+                  Explore Services
                 </Button>
               </Link>
             </div>
